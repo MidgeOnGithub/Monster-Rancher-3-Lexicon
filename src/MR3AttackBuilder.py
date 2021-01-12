@@ -32,7 +32,13 @@ class Attack:
 
 class MR3AttackParser:
     @staticmethod
-    def parse_text(file) -> list[Attack]:
+    def parse_text(file: str) -> list[Attack]:
+        """Parse file's text into a list of Attacks.
+
+        :param str file: File with text to parse
+        :return: List of Attacks
+        :rtype: list[Attack]
+        """
         def create_attack(line_iterator: Iterator[str], line: str, monster_derivation: int):
             """Parses through provided text to create an Attack object.
 
@@ -114,17 +120,23 @@ class MR3AttackParser:
         return attacks
 
 
-def main(file):
+def main(file: str) -> str:
+    """Creates an SQL INSERT query from the data in file.
+
+    :param str file:
+    :return: An SQL INSERT query featuring all MR3 Attacks
+    :rtype: str
+    """
     attacks = []
     for attack in MR3AttackParser.parse_text(file):
         attacks.append(f"({str(attack)})")
     first_line = "INSERT INTO Attack (DerivationId, Attack, StatUsed, AttackType, ItemRequired, GutsUsed, Damage, " \
                  "GutsDown, Critical, Hit, MaxLevel, AttackRange, Growth, Effect) VALUES"
-    print(first_line + "\n\t" + ",\n\t".join(attacks) + ";")
+    return first_line + "\n\t" + ",\n\t".join(attacks) + ";"
 
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: MR3AttackBuilder.py <input-file>")
         exit(1)
-    main(sys.argv[1])
+    print(main(sys.argv[1]))
